@@ -6,6 +6,8 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.util.Observable;
+import java.util.Observer;
 import monte_carlo.SCMC;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -20,13 +22,13 @@ import org.jfree.data.xy.XYSeriesCollection;
  *
  * @author Jožko
  */
-public class GUI extends javax.swing.JFrame {
+public class GUI extends javax.swing.JFrame implements Observer{
 
     /**
      * Creates new form GUI
      */
     XYSeries avgSeries, avgSeries2;
-    int pocetRep;
+    
     SCMC carlo;
 
     public GUI() {
@@ -51,6 +53,23 @@ public class GUI extends javax.swing.JFrame {
         panelKrivka = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         txtZahod = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtPercento = new javax.swing.JTextField();
+        txtEndProject = new javax.swing.JTextField();
+        btnVypPrav = new javax.swing.JButton();
+        btnVypEnd = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        panePrav = new javax.swing.JTextPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        paneDni = new javax.swing.JTextPane();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        areaVypis = new javax.swing.JTextArea();
+        jLabel7 = new javax.swing.JLabel();
+        txtavgName = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -85,45 +104,153 @@ public class GUI extends javax.swing.JFrame {
 
         jLabel2.setText("Zahodiť prvých");
 
-        txtZahod.setText("10000");
+        txtZahod.setText("1000000");
+
+        jLabel3.setText("Aký je čas trvania projektu ak požadujem");
+
+        jLabel4.setText("% pravdepodobnosť splnenia tohto termínu");
+
+        jLabel5.setText("Aká je pravdepodobnosť, že sa projekt podarí ukončiť za");
+
+        jLabel6.setText("dní?");
+
+        txtPercento.setText("80");
+
+        txtEndProject.setText("140");
+
+        btnVypPrav.setText("Vypočítaj");
+        btnVypPrav.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVypPravActionPerformed(evt);
+            }
+        });
+
+        btnVypEnd.setText("Vypočítaj");
+        btnVypEnd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVypEndActionPerformed(evt);
+            }
+        });
+
+        jScrollPane1.setViewportView(panePrav);
+
+        jScrollPane2.setViewportView(paneDni);
+
+        areaVypis.setColumns(20);
+        areaVypis.setRows(5);
+        jScrollPane3.setViewportView(areaVypis);
+
+        jLabel7.setText("Priemerné trvanie projektu");
+
+        txtavgName.setText("0");
+
+        jLabel8.setText("dní");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(84, Short.MAX_VALUE)
-                .addComponent(tabPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 874, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49))
             .addGroup(layout.createSequentialGroup()
                 .addGap(45, 45, 45)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtZahod, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(1, 1, 1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel5)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtEndProject, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel6))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtPercento, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGap(124, 124, 124)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnVypPrav)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnVypEnd)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(17, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtPoceRep, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtPoceRep, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtZahod, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(65, 65, 65)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtavgName, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(295, 295, 295)
+                .addComponent(tabPanel)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(58, 58, 58)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtPoceRep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(69, 69, 69)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtPoceRep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel1))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel2)
+                                .addComponent(txtZahod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnStart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel7)
+                        .addComponent(txtavgName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel8)))
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(jLabel4)
+                        .addComponent(txtPercento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnVypEnd))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtZahod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
-                .addComponent(tabPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(jLabel6)
+                        .addComponent(txtEndProject, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnVypPrav))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(tabPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addComponent(jScrollPane3)))
                 .addGap(23, 23, 23))
         );
 
@@ -131,14 +258,15 @@ public class GUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
-        // TODO add your handling code here:
-        pocetRep = Integer.parseInt(txtPoceRep.getText().toString());
+       
+        int pocetRep = Integer.parseInt(txtPoceRep.getText().toString());
         int zahod = Integer.parseInt(txtZahod.getText().toString());
         carlo = new SCMC(pocetRep, zahod);
+        carlo.addObserver(this);
         avgSeries = new XYSeries("AVG");
         XYSeriesCollection dataset = new XYSeriesCollection(avgSeries);
 
-//        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
         JFreeChart lineChart = ChartFactory.createXYLineChart(null, null, null, dataset);
         final NumberAxis rangeAxis = (NumberAxis) lineChart.getXYPlot().getRangeAxis();
         rangeAxis.setAutoRangeIncludesZero(false);
@@ -147,13 +275,14 @@ public class GUI extends javax.swing.JFrame {
         panelLive.removeAll();
         panelLive.add(chartPanel, BorderLayout.CENTER);
         panelLive.validate();
-//        dataset.addValue(33, "", "test 3");
-        carlo.simuluj(avgSeries, pocetRep);
+        
+        carlo.simuluj(avgSeries);
+        
 
     }//GEN-LAST:event_btnStartActionPerformed
 
     private void tabPanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabPanelMouseClicked
-        // TODO add your handling code here:
+        
        
         
         switch (tabPanel.getSelectedIndex()) {
@@ -161,8 +290,7 @@ public class GUI extends javax.swing.JFrame {
             case 1:
                 createHistogram();
                 break;
-            case 2:
-                System.out.println("--------------------------******************************");
+            case 2:                
                 createKrivka();
                 break;
         }
@@ -170,9 +298,21 @@ public class GUI extends javax.swing.JFrame {
 
     }//GEN-LAST:event_tabPanelMouseClicked
 
+    private void btnVypEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVypEndActionPerformed
+       
+        int dni = carlo.vypDni(Integer.parseInt(txtPercento.getText().toString()));
+        paneDni.setText(String.valueOf(dni));
+    }//GEN-LAST:event_btnVypEndActionPerformed
+
+    private void btnVypPravActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVypPravActionPerformed
+        
+        double prav = carlo.getPrav(Integer.parseInt(txtEndProject.getText().toString()));
+        panePrav.setText(String.valueOf(prav));
+    }//GEN-LAST:event_btnVypPravActionPerformed
+
     private void createHistogram() {
         IntervalXYDataset dataset = carlo.getDataset();
-        JFreeChart chart = ChartFactory.createHistogram("Histogram", "Pocet dni", "Pocet", dataset, PlotOrientation.VERTICAL, true, true, false);
+        JFreeChart chart = ChartFactory.createHistogram("Histogram", "Pocet dni", "Výskyt", dataset, PlotOrientation.VERTICAL, true, true, false);
         ChartPanel myChart = new ChartPanel(chart);
         myChart.setMouseWheelEnabled(true);
         panelHistogram.setLayout(new java.awt.BorderLayout());
@@ -181,11 +321,10 @@ public class GUI extends javax.swing.JFrame {
     }
 
     public void createKrivka() {
-        System.out.println("sommmmm");
+        
         XYSeriesCollection dataset = carlo.getDataSetKrivka();
-//        carlo.otazkaDva();
-//        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        JFreeChart lineChart = ChartFactory.createXYLineChart(null, null, null, dataset);
+
+        JFreeChart lineChart = ChartFactory.createXYLineChart("Pravdepodobnosť splnenia termínu", "Trvanie projektu v dňoch", "Pravdepodobnosť v %", dataset);
         final NumberAxis rangeAxis = (NumberAxis) lineChart.getXYPlot().getRangeAxis();
         rangeAxis.setAutoRangeIncludesZero(false);
         ChartPanel chartPanel = new ChartPanel(lineChart);
@@ -231,22 +370,37 @@ public class GUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea areaVypis;
     private javax.swing.JButton btnStart;
+    private javax.swing.JButton btnVypEnd;
+    private javax.swing.JButton btnVypPrav;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane5;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextPane paneDni;
+    private javax.swing.JTextPane panePrav;
     private javax.swing.JPanel panelHistogram;
     private javax.swing.JPanel panelKrivka;
     private javax.swing.JPanel panelLive;
     private javax.swing.JTabbedPane tabPanel;
+    private javax.swing.JTextField txtEndProject;
+    private javax.swing.JTextField txtPercento;
     private javax.swing.JTextField txtPoceRep;
     private javax.swing.JTextField txtZahod;
+    private javax.swing.JTextField txtavgName;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void update(Observable o, Object arg) {
+        areaVypis.setText(carlo.vypis());
+        txtavgName.setText(String.valueOf(carlo.getAvg()));
+    }
 }

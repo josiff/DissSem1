@@ -5,7 +5,8 @@
  */
 package monte_carlo;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import rozdelenia.SpojRovRoz;
@@ -31,31 +32,31 @@ public class SCMC extends ASCMC {
 
     private int pocetRep;
     private int aktRep;
-    private int stop140;
-    
+
     private double count;
     private boolean running;
-    
-   private Hashtable<Integer, Integer> hodnoty = new Hashtable<Integer, Integer>();
-  
-    
-    private int END_DAY = 140; 
+
+    private Hashtable<Integer, Integer> hodnoty = new Hashtable<Integer, Integer>();
+
     private int WRITE_EVERY = 1000;
-    private double PERCENTA_SKONCENIA = 0.8;
-    
-    
-    
+   
 
     public SCMC(int pocetRep, int zahod) {
         mainRnd = new Random();
         this.pocetRep = pocetRep;
         this.zahod = zahod;
         running = true;
+
         iniWin();
     }
 
     @Override
     protected void iniWin() {
+
+        if (pocetRep < 10000) {
+            WRITE_EVERY = 10;
+        }
+
         akt1 = new DisRovRoz(mainRnd, 4, 15);
         double[] p = {0.2, 0.4, 0.4};
         int[][] trv = {
@@ -92,17 +93,15 @@ public class SCMC extends ASCMC {
 
     @Override
     protected int monteCarlo() {
-        
+
         aktRep++;
-        
+
         double vys1 = 0.0;
         double vys2 = 0.0;
         double vys3 = 0.0;
 
         double pom = 0.0;
         double result = 0.0;
-
-        
 
         boolean flag4 = prav4.nextDouble() < 0.32;
 
@@ -142,92 +141,184 @@ public class SCMC extends ASCMC {
 
         pom = flag4 == false ? getMax(vys1, vys2, vys3) : Math.max(vys1, vys3);
         result += pom;
-        
-        
-        int resultInt = (int)Math.ceil(result);
-        
-        if(resultInt <= END_DAY){
-            stop140++;
-        }
-               
+
+        int resultInt = (int) Math.ceil(result);
+
         count += result;
         addHodnotu(resultInt);
 
         return resultInt;
 
     }
-    
-    private void addHodnotu(int hodnota){
+
+    /**
+     * Pridanie hodnoty do hasshtable
+     * @param hodnota 
+     */
+    private void addHodnotu(int hodnota) {
         int pocet = hodnoty.containsKey(hodnota) ? hodnoty.get(hodnota) : 0;
         hodnoty.put(hodnota, pocet + 1);
     }
 
+    /**
+     * Vrati maximum z cisel
+     * @param a
+     * @param b
+     * @param c
+     * @return 
+     */
     private double getMax(double a, double b, double c) {
         double pom = Math.max(a, b);
         return Math.max(pom, c);
     }
-    
-    
-    private double getAvg(){
-        return count/aktRep;
-        
+
+    public double getAvg() {
+        return count / aktRep;
+
     }
 
-   public IntervalXYDataset getDataset() {
+    /**
+     * Histogram
+     *
+     * @return
+     */
+    public IntervalXYDataset getDataset() {
         XYSeries xyser = new XYSeries("Nazov", true);
 
-//        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (Integer key : hodnoty.keySet()) {
-           
-            xyser.add(key, hodnoty.get(key));
+        for (Integer list1 : sortHashRev(hodnoty)) {
+
+            xyser.add(list1, hodnoty.get(list1));
+
         }
+
         XYSeriesCollection dataset = new XYSeriesCollection(xyser);
         return dataset;
     }
-   
-   
-   public XYSeriesCollection getDataSetKrivka(){
-        XYSeries xySeries = new XYSeries("");
-        int hladanaHodnota = 0;
-        double hodnotaTemp = 0;        
-        double hodnotaDo = PERCENTA_SKONCENIA * pocetRep;
-        for (Integer key : hodnoty.keySet()) {
-            
-            hodnotaTemp += hodnoty.get(key);
-            xySeries.add((double) key, hodnotaTemp);            
 
-            if (hodnotaTemp > hodnotaDo) {
-                hladanaHodnota = key;
-                break;
-            }
+    /**
+     * Graf pre krivku
+     *
+     * @return
+     */
+    public XYSeriesCollection getDataSetKrivka() {
+        XYSeries xySeries = new XYSeries("");
+
+        double sum = 0;
+        double osy = 0;
+
+        for (Integer key : sortHash(hodnoty)) {
+            sum += hodnoty.get(key);
+            osy = sum / aktRep * 100;
+            xySeries.add(key.intValue(), osy);
 
         }
-        
-        
-        return new XYSeriesCollection(xySeries);
-   }
 
-    public void simuluj(XYSeries avgSeries, int pocetOpakovani) {
+        return new XYSeriesCollection(xySeries);
+    }
+
+    /**
+     * Zotriedenie
+     * @param table
+     * @return 
+     */
+    public List<Integer> sortHash(Hashtable<Integer, Integer> table) {
+        List<Integer> list = new ArrayList<Integer>();
+        for (Integer key : table.keySet()) {
+            list.add(key);
+        }
+        Collections.sort(list);
+
+        return list;
+
+    }
+
+    /**
+     * Zotriedenie reverse
+     * @param table
+     * @return 
+     */
+    public List<Integer> sortHashRev(Hashtable<Integer, Integer> table) {
+        List<Integer> list = new ArrayList<Integer>();
+        for (Integer key : table.keySet()) {
+            list.add(key);
+        }
+        Collections.sort(list, Collections.reverseOrder());
+
+        return list;
+
+    }
+
+    /**
+     * Vypisanie travanie projektu s prav skoncenia
+     * @param percento
+     * @return 
+     */
+    public int vypDni(int percento) {
+        double pom = percento * pocetRep / 100;
+        double sum = 0;
+
+        for (Integer key : sortHash(hodnoty)) {
+            sum += hodnoty.get(key);
+
+            if (sum > pom) {
+                return key;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Vratenie s akou prav sa skonci projekt
+     * @param dni
+     * @return 
+     */
+    public double getPrav(int dni) {
+
+        double sum = 0.0;
+        double result = 0.0;
+
+        List<Integer> list = sortHash(hodnoty);
+
+        for (Integer key : list) {
+            if (key.intValue() > dni) {
+                break;
+            }
+            sum += hodnoty.get(key);
+            
+
+        }
+        result = sum / (double) getPocetRep() * 100;
+        return result;
+
+    }
+
+    /**
+     * Spustenie simulacie
+     *
+     * @param avgSeries
+     * @param pocetOpakovani
+     */
+    public void simuluj(XYSeries avgSeries) {
         Thread tr = new Thread() {
             public void run() {
 
-                for (int i = 0; i < pocetOpakovani; i++) {
-                    pause();
+                for (int i = 0; i < getPocetRep(); i++) {
 
                     if (i >= zahod) {
                         if (i % WRITE_EVERY == 0) {
-                           
+
                             avgSeries.add(i, getAvg());
-                           // System.out.println(getAvg());
+                            
                         }
 
                     }
-                    double hod =  monteCarlo();
-                    //System.out.println(hod);
-                    }
+                    monteCarlo();
 
-                //}
-                  System.out.println(getAvg());
+                }               
+                
+                setChanged();
+                notifyObservers();
+
             }
 
         };
@@ -235,15 +326,20 @@ public class SCMC extends ASCMC {
         tr.start();
 
     }
-    
-    
-    private void pause(){
-         while (!this.running) {
-            try {
-                wait();
-            } catch (Exception e) {
-            }
+
+    public String vypis() {
+        String result = "";
+
+        List<Integer> list = sortHash(hodnoty);
+        for (Integer key : list) {
+            result += "Čas: " + key + "dní -- Výskyt: " + hodnoty.get(key) + "\n";
         }
+
+        return result;
+    }
+
+    public int getPocetRep() {
+        return pocetRep;
     }
 
 }

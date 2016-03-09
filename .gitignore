@@ -1,0 +1,11 @@
+*.xml
+*.properties
+build/classes/.netbeans_automatic_build
+*.netbeans_update_resources
+build/classes/main/DissSem1.class
+*.class
+build/classes/main/GUI.form
+*.jar
+dist/README.TXT
+*.mf
+/build/

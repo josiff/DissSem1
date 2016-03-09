@@ -5,11 +5,13 @@
  */
 package monte_carlo;
 
+import java.util.Observable;
+
 /**
  *
  * @author Jožko
  */
-public abstract class ASCMC {
+public abstract class ASCMC extends Observable{
     
     protected abstract void iniWin();
     

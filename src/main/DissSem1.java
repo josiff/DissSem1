@@ -15,17 +15,9 @@ public class DissSem1 {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        // TODO code application logic here
-
-      /* SCMC carlo = new SCMC(10000);
-       
-       carlo.simuluj(null, 10000);*/
+    public static void main(String[] args) {      
         
          new GUI().setVisible(true);
-        
-        
-       
 
     }
 
