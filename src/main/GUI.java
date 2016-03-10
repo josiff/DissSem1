@@ -259,6 +259,10 @@ public class GUI extends javax.swing.JFrame implements Observer{
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
        
+        
+        
+        areaVypis.setText("");
+        
         int pocetRep = Integer.parseInt(txtPoceRep.getText().toString());
         int zahod = Integer.parseInt(txtZahod.getText().toString());
         carlo = new SCMC(pocetRep, zahod);

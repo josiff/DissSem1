@@ -5,6 +5,7 @@
  */
 package rozdelenia;
 
+
 import java.util.Random;
 
 /**
@@ -14,15 +15,21 @@ import java.util.Random;
 public class EmpirickeRoz {
 
     private Random prav;
-    private Random rnd;
+    
     private double[] cond;
     private int[][] trvanie;
+    private Random[]  randomList;
 
     public EmpirickeRoz(Random nasada, double[] p, int[][] trv) {
 
         prav = new Random(nasada.nextLong());
-        rnd = new Random(nasada.nextLong());
+        
         this.cond = new double[p.length + 1];
+        randomList = new Random[p.length];
+        for (int i = 0; i < p.length; i++) {
+            Random rnd = new Random(nasada.nextLong());
+            randomList[i] = rnd;
+        }
         this.trvanie = trv;
         initCond(p);
 
@@ -49,24 +56,17 @@ public class EmpirickeRoz {
         return prav.nextDouble();
     }
 
-    /**
-     * Generovanie hodnoty z intervalu
-     * @param min
-     * @param max
-     * @return 
-     */
-    public int getRnd(int min, int max) {
-        return rnd.nextInt(max - min + 1) + min;
-    }
-
-    
+        
     public int getVal() {
 
-        double p = getPrav();
-        
+        double p = getPrav();        
+        //System.out.println("prav " + p);
         for (int i = 0; i < cond.length; i++) {
-            if (p >= cond[i] && p < cond[i + 1]) {                
-                return getRnd(trvanie[i][0], trvanie[i][1]);
+            if (p >= cond[i] && p < cond[i + 1]) {  
+                //System.out.println("min-" + trvanie[i][0] + " max- " + trvanie[i][1]);
+                Random rnd = randomList[i];
+                
+                return (rnd.nextInt(trvanie[i][1] - trvanie[i][0]) + trvanie[i][0]) ;
             };
         }
 

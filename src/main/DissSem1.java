@@ -5,6 +5,9 @@
  */
 package main;
 
+import java.util.Random;
+import rozdelenia.EmpirickeRoz;
+
 
 /**
  *
@@ -18,6 +21,8 @@ public class DissSem1 {
     public static void main(String[] args) {      
         
          new GUI().setVisible(true);
+         
+         
 
     }
 

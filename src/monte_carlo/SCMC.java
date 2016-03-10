@@ -40,6 +40,7 @@ public class SCMC extends ASCMC {
 
     private int WRITE_EVERY = 1000;
    
+   
 
     public SCMC(int pocetRep, int zahod) {
         mainRnd = new Random();
@@ -254,15 +255,19 @@ public class SCMC extends ASCMC {
      * @return 
      */
     public int vypDni(int percento) {
-        double pom = percento * pocetRep / 100;
+        double pom = percento * aktRep / 100;
         double sum = 0;
 
-        for (Integer key : sortHash(hodnoty)) {
-            sum += hodnoty.get(key);
-
-            if (sum > pom) {
+        List<Integer> list = sortHash(hodnoty);
+        for (Integer key : list) {
+           
+             if (sum > pom) {
                 return key;
             }
+            sum += hodnoty.get(key);
+            
+
+            
         }
         return 0;
     }
@@ -287,7 +292,7 @@ public class SCMC extends ASCMC {
             
 
         }
-        result = sum / (double) getPocetRep() * 100;
+        result = sum / (double) aktRep * 100;
         return result;
 
     }
